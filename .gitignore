@@ -1,0 +1,16 @@
+﻿# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Generated sample images (npm run samples)
+public/samples/
+bench/samples/
+
+# Bench build artefacts
+bench/*.mjs
+bench/*.png
+
+# Scratch files
+tmp_*

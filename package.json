@@ -1,0 +1,32 @@
+{
+  "name": "spectrum-screener",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Convert PNG / JPEG / WebP images into ZX Spectrum colour images, with dithering and attribute-clash control.",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "bench": "esbuild bench/bench.ts --bundle --platform=node --format=esm --outfile=bench/bench.mjs && node bench/bench.mjs",
+    "render": "esbuild bench/render.ts --bundle --platform=node --format=esm --outfile=bench/render.mjs && node bench/render.mjs",
+    "samples": "esbuild bench/samples.ts --bundle --platform=node --format=esm --outfile=bench/samples.mjs && node bench/samples.mjs",
+    "ui": "esbuild bench/ui.ts --bundle --platform=node --format=esm --outfile=bench/ui.mjs --external:jsdom && node bench/ui.mjs",
+    "e2e": "esbuild bench/e2e.ts --bundle --platform=node --format=esm --outfile=bench/e2e.mjs && node bench/e2e.mjs",
+    "vignette": "esbuild bench/vignette.ts --bundle --platform=node --format=esm --outfile=bench/vignette.mjs && node bench/vignette.mjs",
+    "check": "npm run bench && npm run ui && npm run vignette && npm run layers",
+    "layers": "esbuild bench/layers.ts --bundle --platform=node --format=esm --outfile=bench/layers.mjs && node bench/layers.mjs",
+    "layer-render": "esbuild bench/layerRender.ts --bundle --platform=node --format=esm --outfile=bench/layerRender.mjs && node bench/layerRender.mjs",
+    "composite": "esbuild bench/composite.ts --bundle --platform=node --format=esm --outfile=bench/composite.mjs && node bench/composite.mjs",
+    "single-cells": "esbuild bench/singleCells.ts --bundle --platform=node --format=esm --outfile=bench/singleCells.mjs && node bench/singleCells.mjs",
+    "layout": "npm run samples && esbuild bench/layout.ts --bundle --platform=node --format=esm --outfile=bench/layout.mjs --external:playwright && node bench/layout.mjs"
+  },
+  "devDependencies": {
+    "@types/jsdom": "^30.0.0",
+    "@types/node": "^26.6.6",
+    "jsdom": "^31.0.1",
+    "playwright": "^1.65.1",
+    "typescript": "^5.6.3",
+    "vite": "^5.4.10"
+  }
+}

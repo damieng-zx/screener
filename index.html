@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Spectrum Screener — image to ZX Spectrum</title>
+    <link rel="stylesheet" href="./src/style.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Spectrum Screener</h1>
+      <div class="header-tools">
+        <button class="mini" id="state-save" type="button" title="Download layers, masks and settings as a .json file">Save state</button>
+        <button class="mini" id="state-load" type="button" title="Restore layers, masks and settings from a .json file">Load state</button>
+        <button class="mini" id="state-reset" type="button" title="Discard everything and start again">Reset</button>
+        <input type="file" id="state-input" accept="application/json,.json" hidden />
+      </div>
+    </header>
+
+    <main>
+      <section class="stage" id="dropzone">
+        <div class="view">
+          <div class="view-label">
+            <span>Source</span>
+            <span class="view-tools">
+              <span class="menu" id="framing-menu">
+                <button class="mini" type="button" aria-haspopup="true" aria-expanded="false">
+                  Framing ▾
+                </button>
+                <span class="menu-items framing-menu-items" role="menu" hidden>
+                  <div class="framing-controls" id="framing-controls"></div>
+                </span>
+              </span>
+              <button class="mini" id="upload-btn" type="button" title="Load a PNG, JPEG or WebP">Upload</button>
+            </span>
+          </div>
+          <div class="screen">
+            <canvas id="source-canvas" width="256" height="192"></canvas>
+            <canvas id="overlay-canvas" width="256" height="192"></canvas>
+          </div>
+        </div>
+        <div class="view">
+          <div class="view-label">
+            <span>Spectrum</span>
+            <span class="view-tools">
+              <span class="seg scale-seg" id="scale-seg" title="Whole-integer display scale">
+                <button type="button" data-scale="1">1×</button>
+                <button type="button" data-scale="2">2×</button>
+                <button type="button" data-scale="3">3×</button>
+                <button type="button" data-scale="4">4×</button>
+              </span>
+              <span class="menu" id="export-menu">
+                <button class="export-btn" type="button" aria-haspopup="true" aria-expanded="false">
+                  Export ▾
+                </button>
+                <span class="menu-items" role="menu" hidden>
+                  <button type="button" role="menuitem" data-export="scr">.scr <small>6912 B screen memory</small></button>
+                  <button type="button" role="menuitem" data-export="tap">.tap <small>cassette image</small></button>
+                  <button type="button" role="menuitem" data-export="png">PNG <small>×3 preview</small></button>
+                  <button type="button" role="menuitem" data-export="c">C header <small>unsigned char[]</small></button>
+                  <button type="button" role="menuitem" data-export="asm">.asm <small>defb lines</small></button>
+                  <button type="button" role="menuitem" data-export="json">JSON <small>attributes + stats</small></button>
+                </span>
+              </span>
+            </span>
+          </div>
+          <div class="screen" id="out-screen">
+            <canvas id="out-canvas" width="256" height="192"></canvas>
+          </div>
+        </div>
+        <input type="file" id="file-input" accept="image/png,image/jpeg,image/webp,image/*" hidden />
+      </section>
+
+      <section class="workspace">
+        <aside class="panel layers-panel">
+          <div class="panel-head">
+            <h2>Layers</h2>
+            <button class="mini" id="layer-add" type="button">+ Layer</button>
+          </div>
+          <div class="presets" id="presets"></div>
+          <div class="paint-bar" id="paint-bar" hidden>
+            <input type="range" id="brush-size" min="2" max="48" step="1" value="12" title="Brush size" />
+            <button class="mini" id="paint-fill" type="button" title="Paint the whole screen">Fill</button>
+            <button class="mini" id="paint-invert" type="button" title="Invert this layer's mask">Invert</button>
+            <button class="mini" id="paint-clear" type="button" title="Unpaint everything in this layer">Clear</button>
+          </div>
+          <ul class="layer-list" id="layer-list"></ul>
+        </aside>
+
+        <div class="panel controls-panel">
+          <div class="control-groups" id="top-controls"></div>
+          <div class="control-groups" id="controls"></div>
+        </div>
+      </section>
+    </main>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script type="module" src="./src/main.ts"></script>
+  </body>
+</html>
