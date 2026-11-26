@@ -103,4 +103,40 @@ console.log(
 );
 await page.screenshot({ path: 'bench/layout-1280.png', fullPage: true });
 
+// --- the integer scale buttons must actually change the rendered size -------
+//
+// A CSS width cap silently clamped 3x and 4x to the same size as 2x, so the
+// buttons looked dead. Measure the rendered box at each scale instead of
+// trusting the CSS.
+await page.setViewportSize({ width: 1440, height: 900 });
+const scaleSizes: { scale: number; w: number; h: number }[] = [];
+for (const scale of [1, 2, 3, 4]) {
+  await page.click(`#scale-seg button[data-scale="${scale}"]`);
+  await page.waitForTimeout(150);
+  const size = await page.evaluate(() => {
+    const r = document.querySelector('#out-screen')!.getBoundingClientRect();
+    return { w: Math.round(r.width), h: Math.round(r.height) };
+  });
+  scaleSizes.push({ scale, ...size });
+}
+console.log('\ninteger scale sizes:');
+let scaleProblems = 0;
+for (const { scale, w, h } of scaleSizes) {
+  const want = 256 * scale;
+  // Allow a few px for the 1px border and rounding.
+  const ok = Math.abs(w - want) <= 4 && Math.abs(h - 192 * scale) <= 4;
+  if (!ok) scaleProblems++;
+  console.log(`  ${scale}x -> ${w}x${h} (want ${want}x${192 * scale}) ${ok ? 'ok' : 'WRONG'}`);
+}
+// And each step must be strictly larger than the last.
+for (let i = 1; i < scaleSizes.length; i++) {
+  if (scaleSizes[i].w <= scaleSizes[i - 1].w) {
+    scaleProblems++;
+    console.log(`  ${scaleSizes[i].scale}x is not larger than ${scaleSizes[i - 1].scale}x`);
+  }
+}
+console.log(scaleProblems === 0 ? 'scales behave' : `${scaleProblems} scale PROBLEMS`);
+
+if (errors.length || scaleProblems) process.exitCode = 1;
+
 await browser.close();

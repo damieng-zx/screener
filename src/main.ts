@@ -533,11 +533,32 @@ function applyScale(scale: number) {
   for (const b of Array.from(document.querySelectorAll<HTMLButtonElement>('#scale-seg button'))) {
     b.classList.toggle('on', Number(b.dataset.scale) === n);
   }
+  updateStageLayout();
+}
+
+/**
+ * At 256 * n px the Spectrum picture outgrows its half of the stage from about
+ * 3x onwards, so switch the stage to one column and let it use the full width.
+ * Measured rather than guessed at a breakpoint, because the threshold depends on
+ * the window width.
+ */
+function updateStageLayout() {
+  const stage = $<HTMLElement>('#dropzone');
+  const out = $<HTMLElement>('#out-screen');
+  const wanted = 256 * clampInt(Number(out.style.getPropertyValue('--scale')) || 2, 1, 8);
+  // Half the stage, minus the gap and padding between the two views.
+  const available = stage.clientWidth / 2 - 20;
+  stage.classList.toggle('fit-expanded', wanted > available);
+  // The expanded grid track needs the number, since `min(100%, ...)` inside a
+  // shrink-to-fit track collapses to nothing.
+  stage.style.setProperty('--scale-now', String(wanted / 256));
 }
 
 function clampInt(v: number, lo: number, hi: number) {
   return Math.min(hi, Math.max(lo, Math.round(v)));
 }
+
+window.addEventListener('resize', () => updateStageLayout());
 
 for (const b of Array.from(document.querySelectorAll<HTMLButtonElement>('#scale-seg button'))) {
   b.addEventListener('click', () => {

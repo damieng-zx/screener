@@ -109,9 +109,11 @@ main {
   color: var(--ink-dim);
 }
 
-.view {
+/* Only the source is height-capped, so a big photo cannot stretch the stage.
+   The Spectrum view is driven by its integer scale instead: capping it there
+   made 3x and 4x render at the same size as 2x. */
+.view:first-child .screen {
   width: min(100%, calc(var(--screen-max, 300px) * 4 / 3));
-  max-width: 100%;
   margin: 0 auto;
 }
 
@@ -135,14 +137,23 @@ main {
 
 /* The Spectrum view is only ever drawn at whole-integer scale: a fractional
    factor would resample the 1-bit pixels into grey mush and destroy the
-   attribute edges. `--scale` is set from the scale buttons. The image also has
-   to fit its column, so width wins when the column is narrower than Nx. */
+   attribute edges. `--scale` is set from the scale buttons.
+   No max-height cap: clamping the width made 3x and 4x render at exactly the
+   same size as 2x, so the buttons appeared dead. */
 .screen.integer {
   aspect-ratio: auto;
   width: min(100%, calc(256px * var(--scale, 2)));
   height: auto;
   margin: 0 auto;
-  max-width: min(100%, calc(var(--screen-max, 300px) * 4 / 3));
+}
+
+/* At the larger scales the picture no longer fits half the stage. Rather than
+   stacking it (which left a huge empty gutter beside the source), widen this
+   column to exactly what the picture needs.
+   The column is sized from `--scale` directly rather than `auto`, because
+   `min(100%, …)` inside a shrink-to-fit track collapses to a tiny width. */
+.stage.fit-expanded {
+  grid-template-columns: minmax(0, 1fr) calc(256px * var(--scale-now, 2) + 24px);
 }
 
 .screen.integer canvas {

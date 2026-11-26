@@ -3,7 +3,8 @@
 Convert a PNG, JPEG or WebP into an authentic ZX Spectrum screen — 256×192, 15 colours,
 **two per 8×8 cell** — with live control over tone, colour, dithering and attribute clash.
 
-Runs entirely in the browser. No upload, no server, no dependencies at runtime.
+**[Open the live app →](https://damieng-zx.github.io/screener/)** — runs entirely in your
+browser. No upload, no server, no runtime dependencies.
 
 ![Spectrum Screener](docs/screenshot.png)
 
