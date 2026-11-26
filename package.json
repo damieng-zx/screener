@@ -19,7 +19,8 @@
     "layer-render": "esbuild bench/layerRender.ts --bundle --platform=node --format=esm --outfile=bench/layerRender.mjs && node bench/layerRender.mjs",
     "composite": "esbuild bench/composite.ts --bundle --platform=node --format=esm --outfile=bench/composite.mjs && node bench/composite.mjs",
     "single-cells": "esbuild bench/singleCells.ts --bundle --platform=node --format=esm --outfile=bench/singleCells.mjs && node bench/singleCells.mjs",
-    "layout": "npm run samples && esbuild bench/layout.ts --bundle --platform=node --format=esm --outfile=bench/layout.mjs --external:playwright && node bench/layout.mjs"
+    "layout": "npm run samples && esbuild bench/layout.ts --bundle --platform=node --format=esm --outfile=bench/layout.mjs --external:playwright && node bench/layout.mjs",
+    "drive": "esbuild bench/drive.ts --bundle --platform=node --format=esm --outfile=bench/drive.mjs --external:playwright && node bench/drive.mjs"
   },
   "devDependencies": {
     "@types/jsdom": "^30.0.0",

@@ -186,12 +186,29 @@ function vignette(rgb: Float32Array, amount: number, size: number): void {
   }
 }
 
+/**
+ * Unsharp mask.
+ *
+ * `amount` is 0..8 on the slider. The multiplier is calibrated so that the
+ * default (0.4) is a subtle edge lift and the top of the range is emphatic,
+ * rather than the near-no-op a flat x1.6 scale gave (at 0.4 it changed the edge
+ * gradient by 10%, which read as "sharpen does nothing").
+ *
+ * The radius grows slightly with amount too: a stronger sharpen needs a wider
+ * mask or it only ever produces thin halos.
+ */
 function sharpen(rgb: Float32Array, amount: number): void {
+  const a = Math.max(0, amount);
+  if (a < 0.01) return;
+  const radius = 1.1 + Math.min(2.4, a * 0.35);
+  const gain = 0.9 + a * 1.9;
+
   const blurred = new Float32Array(rgb.length);
   blurred.set(rgb);
-  gaussianBlur(blurred, 1.2);
+  gaussianBlur(blurred, radius);
+
   for (let i = 0; i < rgb.length; i++) {
-    rgb[i] = clamp01(rgb[i] + (rgb[i] - blurred[i]) * amount * 1.6);
+    rgb[i] = clamp01(rgb[i] + (rgb[i] - blurred[i]) * gain);
   }
 }
 

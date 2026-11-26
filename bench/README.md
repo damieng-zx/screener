@@ -7,6 +7,7 @@ These are not shipped; they exist to make the converter's behaviour checkable.
 - `layers.ts` — ownership, blending, masks, state files
 - `vignette.ts` — vignette geometry
 - `layout.ts` — measures the real page in Chromium (`npm run layout`)
+- `drive.ts` — drives the app in Microsoft Edge and measures what each control does to the output pixels (`npm run drive`)
 - `e2e.ts`, `render.ts`, `layerRender.ts`, `composite.ts`, `singleCells.ts` — visual output
 - `samples.ts` — generates the sample images
 - `png.ts` — shared PNG writer used by the render scripts
