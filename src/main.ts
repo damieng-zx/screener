@@ -426,6 +426,14 @@ function paintResult(result: ConversionResult) {
   if (!ctx) return;
   const img = new ImageData(new Uint8ClampedArray(result.screen), SCREEN_W, SCREEN_H);
   ctx.putImageData(img, 0, 0);
+  // Report the perceptual error, not the per-pixel one: per-pixel error
+  // punishes dithering by design, so a dithered image can score "worse" while
+  // looking better.
+  const foot = document.querySelector<HTMLElement>('#out-foot');
+  if (foot) {
+    const s = result.stats;
+    foot.textContent = `perceptual ΔE ${s.perceptualError.toFixed(2)} · ${s.distinctAttributes} attrs · ${s.ms.toFixed(0)} ms`;
+  }
 }
 
 // ---------------------------------------------------------------- input

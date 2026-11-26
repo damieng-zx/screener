@@ -162,6 +162,38 @@ variant.
   resamples the 1-bit pixels into grey mush and makes dithering impossible to judge.
 - Everything persists across reloads: layers, masks, framing, scale, and the image itself.
 
+## Measuring quality
+
+The app reports **perceptual ΔE**, not per-pixel ΔE. That distinction matters: a dithered pixel is
+deliberately the "wrong" colour so its neighbours can be right, so per-pixel error punishes
+dithering by design. Measured on a photo-like scene:
+
+| Method | per-pixel ΔE | perceptual ΔE |
+| --- | --- | --- |
+| Smart (default) | 22.6 | **7.5** |
+| Average | 22.7 | 7.6 |
+| Exhaustive | 16.7 | 15.4 |
+| Frequency | 16.4 | 15.9 |
+| No dither | 17.3 | 17.0 |
+
+Per-pixel error ranks exhaustive *above* smart; perceptual error says smart is **twice as good**.
+`npm run drive` drives the real app in Edge and measures this from the rendered canvas.
+
+### What was tried and rejected
+
+Chrominance is *worse* when hue/saturation errors are weighted above lightness, on a hue-wheel
+test where it should help most (5.97 → 7.14 perceptual). The **Colour weighting** slider exists to
+explore it, but defaults to neutral because the measurement contradicts the intuition.
+
+A "mean-first" cell score — adding Knoll/Yliluoma's local-mean-reproduction term to pair selection
+— changes nothing measurable: with 64 pixels per cell, the within-cell spread already dominates.
+The N-candidate algorithms (Knoll, Yliluoma-2, EMA) solve a genuinely different problem, choosing
+*weighted sets* of palette colours per pixel. A Spectrum cell has exactly two colours, so there is
+no set to weight, and the pair-segment scoring already captures what they offer.
+
+All five diffusion kernels land within noise of each other (9.24–9.72 on one scene), which is
+expected: once a cell is limited to two colours, the kernel affects texture, not accuracy.
+
 ## Project layout
 
 ```

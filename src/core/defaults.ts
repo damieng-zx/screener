@@ -29,6 +29,7 @@ export const DEFAULT_OPTIONS: ConvertOptions = {
   method: 'smart',
   dither: 'floyd',
   ditherStrength: 1,
+  chromaWeight: 1,
   preQuantize: false,
   preDither: 'floyd',
   cohesion: 0.35,

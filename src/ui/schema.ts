@@ -159,6 +159,18 @@ export const GROUPS: GroupSpec[] = [
         ],
       },
       {
+        // 1 = plain OKLab distance. Above 1 favours hue/saturation accuracy over
+        // small lightness errors. Measured to cost total accuracy on some
+        // content, so the default is neutral.
+        key: 'chromaWeight',
+        label: 'Colour weighting',
+        kind: 'slider',
+        min: 1,
+        max: 3,
+        step: 0.05,
+        digits: 2,
+      },
+      {
         key: 'brightMode',
         label: 'Brightness',
         kind: 'seg',

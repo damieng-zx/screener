@@ -54,6 +54,17 @@ export interface ConvertOptions {
   method: ConvertMethod;
   dither: DitherName;
   ditherStrength: number;
+  /**
+   * How much hue/saturation error counts relative to lightness error when
+   * choosing a cell's two colours, 1 = plain OKLab distance.
+   *
+   * OKLab is approximately perceptually uniform for lightness, but a viewer
+   * notices a hue shift more than a small brightness shift, so plain distance
+   * quietly under-weights colour. Raising this trades a little luminance
+   * accuracy for a more faithful hue, which is what "colour feels like an
+   * afterthought" looks like in practice.
+   */
+  chromaWeight: number;
   preQuantize: boolean;
   preDither: DitherName;
   cohesion: number;
@@ -65,6 +76,12 @@ export interface ConvertStats {
   meanError: number;
   /** Worst single-pixel OKLab distance x100. */
   maxError: number;
+  /**
+   * Mean OKLab error x100 of 8x8 block averages: what the eye integrates.
+   * Prefer this over `meanError` when comparing dither methods, because
+   * per-pixel error punishes dithering by design.
+   */
+  perceptualError: number;
   cells: number;
   singleColourCells: number;
   brightCells: number;
