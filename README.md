@@ -185,6 +185,45 @@ The port is pinned to **6912** in `vite.config.ts` with `strictPort`. 6912 is th
 Spectrum `.scr` in bytes, and pinning avoids fighting other local projects over Vite's default
 5173 — a clash fails loudly instead of drifting to another port.
 
+## Hosting
+
+The app is fully static — no server, no runtime dependencies — so any static host works. It is
+built with **relative** asset URLs (`base: './'`), so the same `dist/` runs at a domain root, at
+a project subpath, or from a `file://` dump without rebuilding.
+
+### GitHub Pages (configured)
+
+`.github/workflows/pages.yml` deploys on every push to `main`: it installs, runs `npm run check`,
+builds, and publishes `dist/`. The suites gate the deploy, so a build that breaks an invariant
+never reaches the live site.
+
+One-time setup, once per repo:
+
+1. **Settings → Pages → Build and deployment → Source: GitHub Actions**
+2. Push to `main` (or run the workflow from the Actions tab).
+
+It then lives at `https://<owner>.github.io/screener/`.
+
+### Cloudflare R2 / any bucket
+
+`dist/` is self-contained (~80 kB), so it can be uploaded as-is:
+
+```bash
+npm run build
+wrangler r2 object put my-bucket/screener/index.html --file dist/index.html
+# ...and the rest of dist/, preserving the assets/ prefix
+```
+
+Because paths are relative, it works from a prefix like `/screener/` on a custom domain without
+any config change. R2 needs a Worker or custom domain in front to serve it as a website, which
+is the main trade-off against Pages.
+
+### Why the sample pictures are not deployed
+
+`public/samples/` holds generated images used only by the dev harnesses in `bench/`; nothing in
+the app references them. `copyPublicDir: false` keeps 370 kB of them out of the deployed bundle,
+leaving a total of ~80 kB.
+
 ## References
 
 - [Screen memory layout](http://breakintoprogram.co.uk/hardware/computers/zx-spectrum/screen-memory-layout)
